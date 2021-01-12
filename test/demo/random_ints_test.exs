@@ -45,7 +45,7 @@ defmodule Demo.RandomIntsTest do
 
     test "returns false if the number is not in the state" do
       state = %{@state | ints: [10, 5]}
-      assert {:reply, true, ^state} = RandomInts.handle_call({:seen_number?, 7}, self(), state)
+      assert {:reply, false, ^state} = RandomInts.handle_call({:seen_number?, 7}, self(), state)
     end
   end
 end
