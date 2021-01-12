@@ -17,17 +17,12 @@ defmodule Demo.RandomIntsTest do
 
   alias Demo.RandomInts
 
-  # In the test, we "sideload" state, so it's helpful to have a full, valid state defined
-  # up top.
   @state %Demo.RandomInts{
     fetch_mod: FakeRandomIntsFetcher
   }
 
   describe "integration test" do
     test "starts up, can query before and after a fetch" do
-      # In order to do an "end-to-end" test, start up the GenServer with a :name of its own,
-      # so as to not conflict with the default __MODULE__ one running in the app supervision
-      # tree.
       {:ok, pid} =
         RandomInts.start_link(name: :test1, fetch_mod: FakeRandomIntsFetcher, repeat_ms: 50)
 
@@ -42,13 +37,8 @@ defmodule Demo.RandomIntsTest do
     end
   end
 
-  # If the "client" function is literally nothing more than an invocation of GenServer.call,
-  # very little is gained from exercising the whole GenServer process, via testing
-  # RandomInts.seen_number?. Instead, it's faster and easier and usually sufficient to
-  # test the callback "directly" in the context of the test process, with a provided state
   describe "seen_number?/1" do
     test "returns true if the number is in the state" do
-      # we have a @state in this test file, so just update it with what's relevant for the test.
       state = %{@state | ints: [10, 5]}
       assert {:reply, true, ^state} = RandomInts.handle_call({:seen_number?, 10}, self(), state)
     end

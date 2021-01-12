@@ -61,6 +61,8 @@ defmodule MyGenServer do
 
   # ...
 end
+
+iex> {:ok, pid} = MyGenServer.start_link([])
 ```
 
 ## Interacting with a GenServer
@@ -83,7 +85,7 @@ iex> receive do
 iex> GenServer.call(pid, :foo)
 ```
 
-When you write a GenServer, you define callbacks that "listen for" all the calls that you expect.
+When you write a GenServer, you define callbacks that "listen for" all the calls that you expect. Those callbacks then get invoked when another process does a `Genserver.call/2` in that format.
 
 ```elixir
 defmodule MyGenServer do
@@ -97,7 +99,7 @@ defmodule MyGenServer do
   end
 end
 
-iex> {:ok, pid} = MyGenServer.start_link()
+iex> {:ok, pid} = MyGenServer.start_link([])
 
 iex> GenServer.call(pid, {:new_integer, 10})
 :got_your_n!
@@ -192,7 +194,7 @@ On the TRC team some examples of GenServers serving this function are ones that 
 
 ## Recurring processes
 
-GenServers are great to use with `:timer.send_interval/3`, which sends a process a message on a repeated basis. In this case, the GenServer is the stand alone process, and it also effectively sends _itself_ messages every so often, rather than simply being there to respond to other processes.
+GenServers are great to use when you need something done on a repeated basis. In this case, the GenServer is the stand alone process, and it also effectively sends _itself_ messages every so often, rather than simply being there to respond to other processes. A simple way to do it is with `:timer.send_interval`, but you can also do it with `Process.send_after/3`, and then sending another such message in the handling of the previous one.
 
 ```elixir
 defmodule MyGenServer do
